@@ -53,7 +53,9 @@ You can de-structuring useQuery hooks variables values:
 with this 3 lines of code, we can handling the state hook(refers to loading state) and useEffect hooks(refers to data fecthing before rendering the component), in a traditional way. What a powerful library!
 
 ### Extracted the fetcher function
-In the second argument of useQuery hooks we can create the individual function, it is used to create more readable code compared to make the anonymous function in the second argument of useQuery. For the example:
+In the second argument of useQuery hooks we can create the individual function, it is used to create more readable code compared to make the anonymous function in the second argument of useQuery. 
+<br>
+For the example:
 ```
 const fectSuperHeroes = (): Promise<any> => {
     return axios.get('http://localhost:4000/superheroes')
@@ -70,4 +72,20 @@ export const RQSuperheroesPage = () => {
 You can added more flags in useQuery using error and isError:
 ```
 const { isLoading, data, isError, error} = useQuery('superheroes', fectSuperHeroes)    
+```
+
+### React Query Dev Tools
+this module will help you visualize all of the inner working of React Query. To start using it import the necessary module in app.tsx file:
+```
+import { ReactQueryDevtools } from 'react-query/devtools'
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      ...
+      ...
+      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+    </QueryClientProvider>
+  );
+}
 ```
