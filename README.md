@@ -89,3 +89,15 @@ You can added more flags in useQuery using error and isError:
 ```
 const { isLoading, data, isError, error} = useQuery('superheroes', fectSuperHeroes)    
 ```
+
+# Query Caching
+the React Query library provides the cache data when we fetched some data. Not like the traditional way, when we rendering some specific component that having a fetch data function, it will always fecthing the data again and again as long as we rendering the component. Reacy Query can handle that weaknesess by using <strong>Caching</strong>. By default, every query result is cached for 5 minutes. <br/>
+React Query can also knows the server data might have updated and the cached might not contained the latest data. React Query will use the caching data that not been changed and rendering it to the UI, while some other data that has been changed in the server will re-fetching by React Query and deliver it to the UI. We can use the boolean flag in useQuery by using: <strong>isFetching</strong>.
+<br/>
+We can also manage the cache time in React Query by setting up the third argument in useQuery. The third argument will be type of Object, inside the object create the cacheTime propery and added some integer value, value will count as a miliseconds. After the cache time was expired, the data that has been fetched will be turned to be a garbage collected:
+```
+const { isLoading, isError, data, isFetching } = useQuery('superheroes', fectSuperHeroes,
+        { cacheTime: 5000 }
+    )
+```
+

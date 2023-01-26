@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Link, BrowserRouter } from 'react-router-dom';
 import './App.css';
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
@@ -9,13 +9,14 @@ import { RQSuperheroesPage } from './components/RQsuperheroesPage';
 const queryClient = new QueryClient()
 
 function App() {
+
   return (
     <QueryClientProvider client={queryClient}>
-
       <div className="App">
-        <li><a href='/'>Home</a></li>
-        <li><a href='/superheroesPage'>Superheroes</a></li>
-        <li><a href='/RQsuperheroesPage'>RQ Superheroes</a></li>
+
+        <li><Link to={'/'}>HomePage</Link></li>
+        <li><Link to={'/superheroesPage'}>Traditional Superheroes</Link></li>
+        <li><Link to={'/RQsuperheroesPage'}>RQSuperheroesPage</Link></li>
         <Routes>
           <Route index element={<HomePage />}></Route>
           <Route path='/superheroesPage' element={<SuperheroesPage></SuperheroesPage>}></Route>

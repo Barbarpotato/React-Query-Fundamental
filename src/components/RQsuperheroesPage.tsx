@@ -8,7 +8,9 @@ const fectSuperHeroes = (): Promise<any> => {
 
 export const RQSuperheroesPage = () => {
 
-    const { isLoading, isError, data } = useQuery('superheroes', fectSuperHeroes)
+    const { isLoading, isError, data, isFetching } = useQuery('superheroes', fectSuperHeroes,
+        { cacheTime: 50000 }
+    )
 
     if (isLoading) {
         return (
