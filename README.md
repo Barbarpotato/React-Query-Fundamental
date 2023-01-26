@@ -91,13 +91,22 @@ const { isLoading, data, isError, error} = useQuery('superheroes', fectSuperHero
 ```
 
 # Query Caching
-the React Query library provides the cache data when we fetched some data. Not like the traditional way, when we rendering some specific component that having a fetch data function, it will always fecthing the data again and again as long as we rendering the component. Reacy Query can handle that weaknesess by using <strong>Caching</strong>. By default, every query result is cached for 5 minutes. <br/>
-React Query can also knows the server data might have updated and the cached might not contained the latest data. React Query will use the caching data that not been changed and rendering it to the UI, while some other data that has been changed in the server will re-fetching by React Query and deliver it to the UI. We can use the boolean flag in useQuery by using: <strong>isFetching</strong>.
-<br/>
-We can also manage the cache time in React Query by setting up the third argument in useQuery. The third argument will be type of Object, inside the object create the cacheTime propery and added some integer value, value will count as a miliseconds. After the cache time was expired, the data that has been fetched will be turned to be a garbage collected:
+the React Query library provides the cache data when we fetched some data. By default, every query result is cached for 5 minutes. React Query can also knows the server data might have updated and the cached might not contained the latest React Query will use the caching data that not been changed and rendering it to the UI, while React Query trying to re-fetching to check whether the data has changed or not. if some data has been changed, then the new data will update the caching data to the UI. We can use the boolean flag in useQuery by using: <strong>isFetching</strong> to check the data is fetching or not.
+<br/><br/>
+We can also manage the cache time in React Query by setting up the third argument in useQuery. The third argument will be type of Object, inside the object create the cacheTime property and added some integer value, value will count as a miliseconds. After the cache time was expired, the data that has been fetched will be turned to be a garbage collected:
 ```
 const { isLoading, isError, data, isFetching } = useQuery('superheroes', fectSuperHeroes,
         { cacheTime: 5000 }
     )
 ```
 
+# Stale Time
+You can reduce your network request in your application by using the staleTime Property in third argument of useQuery. By using this property, You can set how long for some data to be refetching again. So whenever we trying to rendering some component, it wont be refetching the same data, instead using the cache data until the staleTime was passed.
+```
+ const { isLoading, isError, data } = useQuery('superheroes', fectSuperHeroes,
+        {
+            cacheTime: 120000,
+            staleTime: 30000
+        }
+    )
+```

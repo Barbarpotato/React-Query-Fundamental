@@ -9,8 +9,13 @@ const fectSuperHeroes = (): Promise<any> => {
 export const RQSuperheroesPage = () => {
 
     const { isLoading, isError, data, isFetching } = useQuery('superheroes', fectSuperHeroes,
-        { cacheTime: 50000 }
+        {
+            cacheTime: 120000,
+            staleTime: 20000
+        }
     )
+
+    console.log("isloading", isLoading, "isfetching", isFetching)
 
     if (isLoading) {
         return (
