@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 import { useQuery } from 'react-query'
 import { superheroesObject } from './SuperheroesPage'
 
@@ -11,7 +11,8 @@ export const RQSuperheroesPage = () => {
     const { isLoading, isError, data, isFetching } = useQuery('superheroes', fectSuperHeroes,
         {
             cacheTime: 120000,
-            staleTime: 20000
+
+            refetchOnWindowFocus: true
         }
     )
 

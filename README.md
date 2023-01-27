@@ -101,7 +101,7 @@ const { isLoading, isError, data, isFetching } = useQuery('superheroes', fectSup
 ```
 
 # Stale Time
-You can reduce your network request in your application by using the staleTime Property in third argument of useQuery. By using this property, You can set how long for some data to be refetching again. So whenever we trying to rendering some component, it wont be refetching the same data, instead using the cache data until the staleTime was passed.
+You can reduce your network request in your application by using the staleTime Property in third argument of useQuery. By using this property, You can set how long for some data to be refetching again. So whenever we trying to rendering some component, it wont be refetching the same data, instead using the cache data until the staleTime was passed. the default value of this property is 0 miliseconds:
 ```
  const { isLoading, isError, data } = useQuery('superheroes', fectSuperHeroes,
         {
@@ -109,4 +109,63 @@ You can reduce your network request in your application by using the staleTime P
             staleTime: 30000
         }
     )
+```
+
+# Refetch Default
+there are some properties we can try to play around this React Query library, we can squeeze the third argument properties of useQuery to playing around:
+### refetchOnMount
+the first property is refetchOnMount, this property is used to decide to always fetching the data whenever the component on mount or not. this property was a boolean type. if the value was true, then every component that on mount will re-fetching all the data, otherwise it wont refetch when ever the component on mount. For Example:
+```
+ const { isLoading, isError, data, isFetching } = useQuery('superheroes', fectSuperHeroes,
+        {
+            refetchOnMount: true,
+        }
+    )
+```
+### refetchOnWindowFocus
+refetchOnWindowFocus is used to automatically update the data in the UI that has been fetched previous time when the data has changed in the server side without re-rendering the component. the refetchOnWindowFocus was a boolean type. the default value of this property was false. For Example:
+```
+const { isLoading, isError, data, isFetching } = useQuery('superheroes', fectSuperHeroes,
+        {
+            refetchOnWindowFocus: true,
+        }
+    )
+```
+
+# Polling
+Polling was basically refers to the process of fetching data at regular intervals. for example if we have some component that shows the real time price of different stocks, we might want to fetch data every second to update the User Interface. By using the polling technique in React Query, we can squeeze the third argument of useQuery again by using the <strong>refetchInterval</strong>. this property have default value false. we can set this property to be a integer value (miliseconds) which will result in a continous refetch of the query at that interval. Note: automatic refecthing data will be paused if the window loses focus, it means that whenever we are not on our application sight, the refetching data will be paused. If we want to keep refecthing the data even the window loses focus, we can added new propertiy name <strong>refetchIntervalInBackground</strong> this property was a boolean type.
+```
+const { isLoading, isError, data, isFetching } = useQuery('superheroes', fectSuperHeroes,
+        {
+            refetchInterval: 1000,
+            refetchIntervalInBackground: true
+        }
+    )
+```
+
+# useQuery on Click
+We might have to fetch the data based on a user event and not when the component is mount. 
+1. The first step we are going to do is to squeeze the third argument od useQuery using enable: false. By default, enable was set to true. the data fecthing will be disabled.
+2. second step is to create fetching data on a click of a button. first thing is build button tag HTML and prepared the onClick Function, then used <strong>refetch</strong> in return of useQuery to manually trigger the query. then passed the refetch to the onClick Handler. Note: refetch is a function
+```
+const { isLoading, isError, data, isFetching, refetch } = useQuery('superheroes', fectSuperHeroes,
+        {
+            enable: false
+        }
+    )
+
+ return (
+        <div>
+            <button onClick={() => refetch()}>Fetch Heroes</button>
+            <h2>React Query Superheroes page</h2>
+            {
+                isError ? <p>There is Something Wrong!</p>
+                    :
+                    data?.data.map((item: superheroesObject, idx: number) => (
+                        <div key={idx}>
+                            <p>{item.name}</p>
+                        </div>
+                    ))
+            }
+        </div >
 ```
