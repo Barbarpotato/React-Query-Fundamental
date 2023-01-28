@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { setLogger } from 'react-query'
 
 export interface superheroesObject {
     id: number,

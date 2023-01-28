@@ -1,5 +1,5 @@
 # Why React Query?
-According to <a href="https://react-query-v3.tanstack.com/overview">Reacy Query Documentation</a>, React applications do not come with an opinionated way of fetching or updating data from your components so developers end up building their own ways of fetching data. This usually means cobbling together component-based state and effect using React hooks, or using more general purpose state management libraries to store and provide asynchronous data throughout their apps. with React Query, You will remove <strong>Many</strong> lines of complicated and misunderstood code from your application and replace with just a handful of lines of React Query logic, Make your application more maintainable and easier to build new features without worrying about wiring up new server state data sources and Have a direct impact on your end-users by making your application feel faster and more responsive than ever before.
+According to <a href="https://react-query-v3.tanstack.com/overview">React Query Documentation</a>, React applications do not come with an opinionated way of fetching or updating data from your components so developers end up building their own ways of fetching data. This usually means cobbling together component-based state and effect using React hooks, or using more general purpose state management libraries to store and provide asynchronous data throughout their apps. with React Query, You will remove <strong>Many</strong> lines of complicated and misunderstood code from your application and replace with just a handful of lines of React Query logic, Make your application more maintainable and easier to build new features without worrying about wiring up new server state data sources and Have a direct impact on your end-users by making your application feel faster and more responsive than ever before.
 
 # Setup the React Query
 First install the peckage:
@@ -168,4 +168,100 @@ const { isLoading, isError, data, isFetching, refetch } = useQuery('superheroes'
                     ))
             }
         </div >
+```
+
+# Callback with useQuery
+Sometimes when we are dealing with the data fetching, we might want to perform a side effect when the query completes, for the example like opening the modal, navigating to a different route or even displaying the toast notifications. Reacy Query let us specify success and error callback as configurations to the useQuery hook.
+First, create success and error function. then added this function in the onSucess and onError property in the third argument of useQuery hook.
+```
+    ...
+    ...
+    const [refetchInterval, setRefecthInterval] = useState<number>(3000)
+
+    const onSuccess = (response: any): void => {
+        if (response.data.length == 4) setRefecthInterval(0)
+        else {
+            setRefecthInterval(3000)
+        }
+    }
+
+     const onError = (response: any): void => {
+        if (response.name === 'AxiosError') {
+            setRefecthInterval(0)
+        }   
+    }
+
+    const { isLoading, isError, data, isFetching } = useQuery('superheroes', fectSuperHeroes,
+        {
+            onError,
+            onSuccess,
+            refetchInterval,
+            refetchOnWindowFocus: true
+        }
+    )
+    ...
+    ...
+```
+
+# Data Transformation
+You can specified the form of the data by transforming them. You can change the form of the data by the API that we consumend and then changing it to a specific way that developer needs. To achieve this, we can specify the useQuery third argument configuration called <strong>select</strong>. Select is a function that automatically recevies the API data as an argument.
+```
+    const { isLoading, isError, data, isFetching } = useQuery('superheroes', fectSuperHeroes,
+        {
+            onError,
+            onSuccess,
+            refetchInterval,
+            refetchOnWindowFocus: true,
+            select: (data) => {
+                const superherosName = data.data.map((item: superheroesObject) => item.name)
+                return superherosName
+            }
+        }
+    )
+    ...
+    ...
+    return (
+        <div>
+            <h2>React Query Superheroes page</h2>
+            {isError ? <p>There is Something Wrong!</p>
+                :
+                data.map((name: string, idx: number) => (
+                    <div key={idx}>
+                        <p>{name}</p>
+                    </div>
+                ))}
+        </div>
+    )
+```
+# Custom Query Hook
+as far we know about useQuery hooks, it have 3 argument, first is the key, second is a fetcher function, and the third argument is a configuration to tweak its behavior. this pattern is great for building the samll applications, but it not fit for the larger app. in larger app, we might want to re-use the data fetching, for example: the same query might be required in the other component that we created.
+1. Create new file. inside this file, create the useQuery functionality:
+```
+import { superheroesObject } from '../components/SuperheroesPage'
+import axios from 'axios'
+import { useQuery } from 'react-query'
+
+const fectSuperHeroes = (): Promise<any> => {
+    return axios.get('http://localhost:4000/superheroes')
+}
+
+export const useDataSuperheroesname = (onError: (response: any) => void,
+    onSuccess: (response: any) => void) => {
+    return useQuery('superheroes-name', fectSuperHeroes, {
+        onError,
+        onSuccess,
+        refetchOnWindowFocus: true,
+        select: (data) => {
+            const superherosName = data.data.map((item: superheroesObject) => item.name)
+            return superherosName
+        }
+    })
+}
+
+```
+2. Use the custom hook we made in step 1 to the component:
+```
+    ...
+    ...
+    const { isLoading, isError, data, isFetching } = useDataSuperheroesname(onError, onSuccess)
 ```

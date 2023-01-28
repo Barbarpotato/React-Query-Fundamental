@@ -1,20 +1,16 @@
-import axios from 'axios'
-import { useQuery } from 'react-query'
-import { superheroesObject } from './SuperheroesPage'
-
-const fectSuperHeroes = (): Promise<any> => {
-    return axios.get('http://localhost:4000/superheroes')
-}
+import { useDataSuperheroesname } from '../hooks/useDataSuperherosname'
 
 export const RQSuperheroesPage = () => {
 
-    const { isLoading, isError, data, isFetching } = useQuery('superheroes', fectSuperHeroes,
-        {
-            cacheTime: 120000,
+    const onSuccess = (response: any): void => {
+        console.log('success fetched data!', response)
+    }
 
-            refetchOnWindowFocus: true
-        }
-    )
+    const onError = (response: any): void => {
+        console.log('failed fetched data!', response)
+    }
+
+    const { isLoading, isError, data, isFetching } = useDataSuperheroesname(onError, onSuccess)
 
     console.log("isloading", isLoading, "isfetching", isFetching)
 
@@ -29,9 +25,9 @@ export const RQSuperheroesPage = () => {
             <h2>React Query Superheroes page</h2>
             {isError ? <p>There is Something Wrong!</p>
                 :
-                data?.data.map((item: superheroesObject, idx: number) => (
+                data.map((name: string, idx: number) => (
                     <div key={idx}>
-                        <p>{item.name}</p>
+                        <p>{name}</p>
                     </div>
                 ))}
         </div>
