@@ -265,3 +265,50 @@ export const useDataSuperheroesname = (onError: (response: any) => void,
     ...
     const { isLoading, isError, data, isFetching } = useDataSuperheroesname(onError, onSuccess)
 ```
+
+# Parallel Queries
+Sometimes a single component needs to call multiple API's to fetch the necessary data. to implement it in React Query we can just use multiple useQuery in a single component. but when we destructure the values return, we cannot use the value because we have the same variable conflict. to solve this, we can use appropriate alias and make us of it.
+```
+    ...
+    ...
+    const { data: superheroes, isLoading: superheroesLoading } = useDataSuperheroesname(onError, onSuccess)
+    const { data: friends, isLoading: friendsLoading } = useQuery('friends-name', fetchFriends)
+    ...
+    ...
+     return (
+        <div>
+            <h1>Superheroes List</h1>
+            <ol>
+                {superheroes.map((item: superheroesObject) => (
+                    <li>{item.name}</li>
+                ))}
+            </ol>
+            <h1>Friends List</h1>
+            <ol>
+                {friends?.data.map((item: friendsObject) => (
+                    <li>{item.name}</li>
+                ))}
+            </ol>
+        </div>
+    )
+```
+# Dynamic Parallel Queries
+If the number of queries you need to execute is changing from render to render, you cannot use manual querying like in a above, since that would violate the rules of hooks. Instead, React Query provides a useQueries hook, which you can use to dynamically execute as many queries in parallel as you'd like.
+```
+type DynamicProps = {
+    heroId: Array<number>
+}
+
+export const RQDynamicparallelPage = ({ heroId }: DynamicProps) => {
+
+    const queryResults = useQueries(heroId.map((id) => {
+        return {
+            queryKey: ['superhero-name', id],
+            queryFn: () => {
+                return axios.get(`http://localhost:4000/superheroes/${id}`)
+            }
+        }
+    }))
+    ...
+    ...
+```

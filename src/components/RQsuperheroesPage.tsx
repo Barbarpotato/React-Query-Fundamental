@@ -1,4 +1,6 @@
-import { useDataSuperheroesname } from '../hooks/useDataSuperherosname'
+import { useDataSuperheroesname } from '../hooks/useDataSuperheroesname'
+import { Link } from 'react-router-dom'
+import { superheroesObject } from './SuperheroesPage'
 
 export const RQSuperheroesPage = () => {
 
@@ -25,9 +27,9 @@ export const RQSuperheroesPage = () => {
             <h2>React Query Superheroes page</h2>
             {isError ? <p>There is Something Wrong!</p>
                 :
-                data.map((name: string, idx: number) => (
+                data.map((item: superheroesObject, idx: number) => (
                     <div key={idx}>
-                        <p>{name}</p>
+                        <Link to={`/RQsuperheroPage/${item.id}`}>{item.name}</Link>
                     </div>
                 ))}
         </div>

@@ -13,7 +13,7 @@ export const useDataSuperheroesname = (onError: (response: any) => void,
         onSuccess,
         refetchOnWindowFocus: true,
         select: (data) => {
-            const superherosName = data.data.map((item: superheroesObject) => item.name)
+            const superherosName = data.data.map((item: superheroesObject) => ({ name: item.name, id: item.id }))
             return superherosName
         }
     })
