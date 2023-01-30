@@ -29,5 +29,21 @@
             "id": 3,
             "name": "Robb"
         }
+    ],
+    "users": [
+        {
+            "id": "darmajr94@gmail.com",
+            "channelId": "barbarpotato"
+        }
+    ],
+    "channels": [
+        {
+            "id": "barbarpotato",
+            "skills": [
+                "React",
+                "Nest",
+                "Next"
+            ]
+        }
     ]
 }

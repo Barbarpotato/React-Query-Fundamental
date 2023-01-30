@@ -312,3 +312,56 @@ export const RQDynamicparallelPage = ({ heroId }: DynamicProps) => {
     ...
     ...
 ```
+
+# Dependent Queries
+This Queries was related to the Parallel Queries. Where some specific Query depend on one other Query to finish, before they can execute the other specific Query. For Example:
+```
+    ...
+    ...
+    // Get the user
+    const { data: user } = useQuery(['user', email], getUserByEmail)
+    
+    const userId = user?.id
+    
+    // Then get the user's projects
+    const { isIdle, data: projects } = useQuery(
+    ['projects', userId],
+    getProjectsByUser,
+    {
+        // The query will not execute until the userId exists
+        enabled: !!userId,
+    }
+    )
+    // isIdle will be `true` until `enabled` is true and the query begins to fetch.
+    // It will then go to the `isLoading` stage and hopefully the `isSuccess` stage :)
+    ...
+    ...
+```
+in this scenario, we want the projects query fired after the userId value has been retrieved from the users query. to implement it, we use the enabled property in the projects query third argument and setup the value to be -> !!userId (double nagation converts the value to a boolean. true if the value is not undefined anymore otherwise it will be false). 
+
+# Initial Query Data
+This feature improves the data viewing experiences for a user. for the use case of this course, if we want to access the superhero detail, from the superheroes component, it will always fetching the specific superhero data from the id itself, which is make the user going to see the loading component, because the query will trying to fetch some specific detail of superhero.<br/>
+But what if we utilize the cache data of superheroes query from the superheroes component to get used in the superhero detail component? The query is not set a loading state, because we used the initial data from superheroes cache query, which are make users not waiting the data to delivered to them anymore. Only a background refetch is initiated and once details are retrieved they will overwrite any initial data we might have set. In our study case, we will modify our custom hook that we made before and change it like this:
+```
+export const useDataSuperheroname = (onError: (response: any) => void,
+    onSuccess: (response: any) => void, heroId: any) => {
+    const queryClient: any = useQueryClient()
+    return useQuery(['superhero-name', heroId], () => {
+        return axios.get(`http://localhost:4000/superheroes/${heroId}`)
+    }, {
+        ...
+        ...
+        initialData: (): any => {
+            const superheroDetail = queryClient.getQueryData('superheroes-name')?.data?.find((data: any) => {
+                return data.id === parseInt(heroId)
+            })
+            if (superheroDetail) {
+                return { data: superheroDetail }
+            } else {
+                return undefined
+            }
+        }
+    })
+}
+```
+the thing you should notice is, if we want to access the caching data from specific query, you need to import a hook called <strong>useQueryClient</strong>. then, create the instance of it. in query configuration, add initialData property which is a function type. If we want to access the caching data from some queries. just calling the instanciate useQueryClient and call getQueryData method. You need to fill the query key of what cache we want to get in getQueryDta argument. then return what do you want to return from it.   
