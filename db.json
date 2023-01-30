@@ -45,5 +45,39 @@
                 "Next"
             ]
         }
+    ],
+    "colors": [
+        {
+            "id": 1,
+            "type": "white"
+        },
+        {
+            "id": 2,
+            "type": "red"
+        },
+        {
+            "id": 3,
+            "type": "yellow"
+        },
+        {
+            "id": 4,
+            "type": "Black"
+        },
+        {
+            "id": 5,
+            "type": "Purple"
+        },
+        {
+            "id": 6,
+            "type": "Brown"
+        },
+        {
+            "id": 7,
+            "type": "Gray"
+        },
+        {
+            "id": 8,
+            "type": "Blue"
+        }
     ]
 }

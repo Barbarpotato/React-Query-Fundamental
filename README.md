@@ -269,6 +269,8 @@ export const useDataSuperheroesname = (onError: (response: any) => void,
 # Parallel Queries
 Sometimes a single component needs to call multiple API's to fetch the necessary data. to implement it in React Query we can just use multiple useQuery in a single component. but when we destructure the values return, we cannot use the value because we have the same variable conflict. to solve this, we can use appropriate alias and make us of it.
 ```
+import { useQuery, useQueryClient } from 'react-query'
+    ...a
     ...
     ...
     const { data: superheroes, isLoading: superheroesLoading } = useDataSuperheroesname(onError, onSuccess)
@@ -337,7 +339,7 @@ This Queries was related to the Parallel Queries. Where some specific Query depe
     ...
     ...
 ```
-in this scenario, we want the projects query fired after the userId value has been retrieved from the users query. to implement it, we use the enabled property in the projects query third argument and setup the value to be -> !!userId (double nagation converts the value to a boolean. true if the value is not undefined anymore otherwise it will be false). 
+In this scenario, we want the projects query fired after the userId value has been retrieved from the users query. to implement it, we use the enabled property in the projects query third argument and setup the value to be -> !!userId (double nagation converts the value to a boolean. true if the value is not undefined anymore otherwise it will be false). 
 
 # Initial Query Data
 This feature improves the data viewing experiences for a user. for the use case of this course, if we want to access the superhero detail, from the superheroes component, it will always fetching the specific superhero data from the id itself, which is make the user going to see the loading component, because the query will trying to fetch some specific detail of superhero.<br/>
@@ -364,4 +366,35 @@ export const useDataSuperheroname = (onError: (response: any) => void,
     })
 }
 ```
-the thing you should notice is, if we want to access the caching data from specific query, you need to import a hook called <strong>useQueryClient</strong>. then, create the instance of it. in query configuration, add initialData property which is a function type. If we want to access the caching data from some queries. just calling the instanciate useQueryClient and call getQueryData method. You need to fill the query key of what cache we want to get in getQueryDta argument. then return what do you want to return from it.   
+The thing you should notice is, if we want to access the caching data from specific query, you need to import a hook called <strong>useQueryClient</strong>. then, create the instance of it. in query configuration, add initialData property which is a function type. If we want to access the caching data from some queries. just calling the instanciate useQueryClient and call getQueryData method. You need to fill the query key of what cache we want to get in getQueryData argument. then return what do you want to return from it.
+
+# Paginated Queries
+To implement data fecthing in Pagination, We simply using the basic useQuery hook. Hoewever, React Query treated all the data like a brand new query each time user move to another page index. To handle this performance, we can use the property named <strong>keepPreviousData</strong>.The data from the last successful fetch will available, while new data is being requested, even though the query key has changed and when the new data arrives, the previous data is seamlessly swapped to show the new data. with this thing, the loading state of useQuery will be dissapear.
+```
+    ...
+    ...
+    const [pageIndex, setPageIndex] = useState<number>(1)
+
+    const { data, isLoading } = useQuery(['colors', pageIndex], () => fetchColorbyQuery(pageIndex), {
+        keepPreviousData: true,
+        select: (data) => {
+            const getObject = data.data
+            return getObject
+        }
+    })
+    ...
+    ...
+    return (
+        <div>
+            <h1>Dependent Queries</h1>
+            {isLoading ? <>Loading...</> : data?.map((item: colorType) => (
+                <div>
+                    <p>{item.id}</p>
+                    <p>{item.type}</p>
+                </div>
+            ))}
+            <button onClick={() => setPageIndex(pageIndex - 1)} disabled={pageIndex === 1}>Prev Page</button>
+            <button onClick={() => setPageIndex(pageIndex + 1)} disabled={pageIndex === 4}>Next Page</button>
+        </div>
+    )
+```
