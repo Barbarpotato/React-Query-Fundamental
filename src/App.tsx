@@ -10,6 +10,7 @@ import { RQparallelPage } from './components/RQparallelPage';
 import { RQDynamicparallelPage } from './components/RQDynamicparallelPage';
 import { RQDependentPage } from './components/RQDependentPage';
 import { RQPaginatedPage } from './components/RQPaginatedPage';
+import { RQInfinitePage } from './components/RQInfinitePage';
 
 const queryClient = new QueryClient()
 
@@ -26,6 +27,7 @@ function App() {
         <li><Link to={'/RQDynamicParallelPage'}>RQDynamicparallelPage</Link></li>
         <li><Link to={'/RQDependentPage'}>RQDependentPage</Link></li>
         <li><Link to={'/RQPaginatedPage'}>RQPaginatedPage</Link></li>
+        <li><Link to={'/RQInfinitePage'}>RQPaginatedPage</Link></li>
 
         <Routes>
           <Route index element={<HomePage />}></Route>
@@ -35,6 +37,7 @@ function App() {
           <Route path='RQDynamicParallelPage' element={<RQDynamicparallelPage heroId={[1, 3]}></RQDynamicparallelPage>}></Route>
           <Route path='/RQDependentPage' element={<RQDependentPage userId={'darmajr94@gmail.com'}></RQDependentPage>}></Route>
           <Route path='/RQPaginatedPage' element={<RQPaginatedPage ></RQPaginatedPage>}></Route>
+          <Route path='/RQInfinitePage' element={<RQInfinitePage ></RQInfinitePage>}></Route>
           <Route path='/RQsuperheroPage/:heroId' element={<RQSuperheroPage ></RQSuperheroPage>}></Route>
 
         </Routes>

@@ -270,7 +270,7 @@ export const useDataSuperheroesname = (onError: (response: any) => void,
 Sometimes a single component needs to call multiple API's to fetch the necessary data. to implement it in React Query we can just use multiple useQuery in a single component. but when we destructure the values return, we cannot use the value because we have the same variable conflict. to solve this, we can use appropriate alias and make us of it.
 ```
 import { useQuery, useQueryClient } from 'react-query'
-    ...a
+    ...
     ...
     ...
     const { data: superheroes, isLoading: superheroesLoading } = useDataSuperheroesname(onError, onSuccess)
@@ -397,4 +397,49 @@ To implement data fecthing in Pagination, We simply using the basic useQuery hoo
             <button onClick={() => setPageIndex(pageIndex + 1)} disabled={pageIndex === 4}>Next Page</button>
         </div>
     )
+```
+# Infinite Queries
+Rendering lists that can additively "load more" data onto an existing set of data or "infinite scroll" is also a very common UI pattern. React Query supports a useful version of useQuery called useInfiniteQuery for querying these types of lists.<br/>
+In our case, when using useInfiniteQuery, you'll notice a few things are different:
+- data is now an object containing infinite query data
+- data.pages array containing the fetched pages
+- data.pageParams array containing the page params used to fetch the pages
+- The <strong>fetchNextPage</strong> and <strong>fetchPreviousPage</strong> functions are now available
+- The <strong>getNextPageParam</strong> and <strong>getPreviousPageParam</strong> options are available for both determining if there is more data to load and the information to fetch it. This information is supplied as an additional parameter in the query function (which can optionally be overridden when calling the fetchNextPage or fetchPreviousPage functions)
+- A <strong>hasNextPage</strong> boolean is now available and is true if getNextPageParam returns a value other than undefined
+- A <strong>hasPreviousPage</strong> boolean is now available and is true if getPreviousPageParam returns a value other than undefined
+- The <strong>isFetchingNextPage</strong> and <strong>isFetchingPreviousPage</strong> booleans are now available to distinguish between a background refresh state and a loading more state
+```
+const fetchColors = (pageParam: number) => {
+    return axios.get(`http://localhost:4000/colors?_limit=2&_page=${pageParam}`)
+}
+
+export const RQInfinitePage = () => {
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery('colorsInfitnite',
+        ({ pageParam = 1 }) => fetchColors(pageParam),
+        {
+            getNextPageParam: (_lastpage, pages) => {
+                if (pages.length < 4) {
+                    return pages.length + 1
+                } else {
+                    return undefined
+                }
+            }
+        })
+
+    return (
+        <div>
+            {data?.pages.map((group: any, idx: number) => (
+                <React.Fragment key={idx}>
+                    {group.data.map((color: colorType, idx: number) => (
+                        <p key={idx}>{color.type}</p>
+                    ))}
+                </React.Fragment>
+            ))}
+            <button onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
+                Load more...
+            </button>
+        </div>
+    )
+}
 ```
