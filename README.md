@@ -443,3 +443,49 @@ export const RQInfinitePage = () => {
     )
 }
 ```
+# Mutations
+Mutation is used to Posting & Updating some data from the front end client user to the backend application so the data that has been written from the user can be save in the backend layer logic. to implementing it, first we need to import  useMutations from the React-Query itself. For our case, we will creating the custom hook for post data using useMutation:
+```
+type postSuperheroType = {
+    name: string,
+    alterEgo: string
+}
+
+const postSuperhero = (superhero: postSuperheroType): Promise<any> => {
+    return axios.post('http://localhost:4000/superheroes', superhero)
+}
+
+export const AddDataSuperheroname = () => {
+    return useMutation(postSuperhero)
+}
+```
+In the component file, we can use the custom hook we made above and configuring the code like: 
+```
+export const RQSuperheroesPage = () => {
+
+    const [name, setName] = useState<string>('')
+    const [alterEgo, setAlterEgo] = useState<string>('')
+    ...
+    ...
+    const { isLoading, isError, data, refetch } = useDataSuperheroesname(onError, onSuccess)
+    const { mutate: addHero, isSuccess } = AddDataSuperheroname()
+
+    const handleAddSuperhero = (): void => {
+        const dataPost = { name, alterEgo }
+        addHero(dataPost)
+        refetch()
+    }
+    if (isSuccess) {
+        refetch()
+    }
+     <div>
+            <h2>React Query Superheroes page</h2>
+            <input onChange={(e) => setName(e.target.value)} value={name}></input><br />
+            <input onChange={(e) => setAlterEgo(e.target.value)} value={alterEgo} ></input><br />
+            <button onClick={handleAddSuperhero}> Post</button>
+            ...
+            ...
+```
+- useMutation unlike the useQuery, it does not necessarily need the query key. 
+- The First argument is the post function that return promise, which will post the data to the backend.
+- There is one important value that useMutation return, which is <strong>mutate</strong>. mutate is a function that we have to call to make the post request. where the argument of this function is the data that we are going to send to the backend layer.

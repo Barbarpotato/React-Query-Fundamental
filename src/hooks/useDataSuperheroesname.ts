@@ -1,6 +1,6 @@
 import { superheroesObject } from '../components/SuperheroesPage'
 import axios from 'axios'
-import { useQuery } from 'react-query'
+import { useQuery, useMutation } from 'react-query'
 
 const fectSuperHeroes = (): Promise<any> => {
     return axios.get('http://localhost:4000/superheroes')
@@ -17,4 +17,17 @@ export const useDataSuperheroesname = (onError: (response: any) => void,
             return superherosName
         }
     })
+}
+
+type postSuperheroType = {
+    name: string,
+    alterEgo: string
+}
+
+const postSuperhero = (superhero: postSuperheroType): Promise<any> => {
+    return axios.post('http://localhost:4000/superheroes', superhero)
+}
+
+export const AddDataSuperheroname = () => {
+    return useMutation(postSuperhero)
 }

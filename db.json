@@ -1,83 +1,93 @@
 {
-    "superheroes": [
-        {
-            "id": 1,
-            "name": "Batman",
-            "alterEgo": "Bruce Wayne"
-        },
-        {
-            "id": 2,
-            "name": "Superman",
-            "alterEgo": "Clark Kent"
-        },
-        {
-            "id": 3,
-            "name": "Wonder Woman",
-            "alterEgo": "Princess Diana"
-        }
-    ],
-    "friends": [
-        {
-            "id": 1,
-            "name": "Thomas"
-        },
-        {
-            "id": 2,
-            "name": "Snow"
-        },
-        {
-            "id": 3,
-            "name": "Robb"
-        }
-    ],
-    "users": [
-        {
-            "id": "darmajr94@gmail.com",
-            "channelId": "barbarpotato"
-        }
-    ],
-    "channels": [
-        {
-            "id": "barbarpotato",
-            "skills": [
-                "React",
-                "Nest",
-                "Next"
-            ]
-        }
-    ],
-    "colors": [
-        {
-            "id": 1,
-            "type": "white"
-        },
-        {
-            "id": 2,
-            "type": "red"
-        },
-        {
-            "id": 3,
-            "type": "yellow"
-        },
-        {
-            "id": 4,
-            "type": "Black"
-        },
-        {
-            "id": 5,
-            "type": "Purple"
-        },
-        {
-            "id": 6,
-            "type": "Brown"
-        },
-        {
-            "id": 7,
-            "type": "Gray"
-        },
-        {
-            "id": 8,
-            "type": "Blue"
-        }
-    ]
+  "superheroes": [
+    {
+      "id": 1,
+      "name": "Batman",
+      "alterEgo": "Bruce Wayne"
+    },
+    {
+      "id": 2,
+      "name": "Superman",
+      "alterEgo": "Clark Kent"
+    },
+    {
+      "id": 3,
+      "name": "Wonder Woman",
+      "alterEgo": "Princess Diana"
+    },
+    {
+      "name": "Captain America",
+      "alterEgo": "Chris Evan",
+      "id": 4
+    },
+    {
+      "name": "Iron Man",
+      "alterEgo": "Tony Stark",
+      "id": 5
+    }
+  ],
+  "friends": [
+    {
+      "id": 1,
+      "name": "Thomas"
+    },
+    {
+      "id": 2,
+      "name": "Snow"
+    },
+    {
+      "id": 3,
+      "name": "Robb"
+    }
+  ],
+  "users": [
+    {
+      "id": "darmajr94@gmail.com",
+      "channelId": "barbarpotato"
+    }
+  ],
+  "channels": [
+    {
+      "id": "barbarpotato",
+      "skills": [
+        "React",
+        "Nest",
+        "Next"
+      ]
+    }
+  ],
+  "colors": [
+    {
+      "id": 1,
+      "type": "white"
+    },
+    {
+      "id": 2,
+      "type": "red"
+    },
+    {
+      "id": 3,
+      "type": "yellow"
+    },
+    {
+      "id": 4,
+      "type": "Black"
+    },
+    {
+      "id": 5,
+      "type": "Purple"
+    },
+    {
+      "id": 6,
+      "type": "Brown"
+    },
+    {
+      "id": 7,
+      "type": "Gray"
+    },
+    {
+      "id": 8,
+      "type": "Blue"
+    }
+  ]
 }
