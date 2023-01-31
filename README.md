@@ -489,3 +489,16 @@ export const RQSuperheroesPage = () => {
 - useMutation unlike the useQuery, it does not necessarily need the query key. 
 - The First argument is the post function that return promise, which will post the data to the backend.
 - There is one important value that useMutation return, which is <strong>mutate</strong>. mutate is a function that we have to call to make the post request. where the argument of this function is the data that we are going to send to the backend layer.
+
+### Query Invalidation
+In above example, we using isSuccess return to refetching superheroes query again, it's because as soon as we posting a data using useMutation, the superheroes query data is out of date. There is another way to implement it. It called <strong>Query Invalidation</strong>. We are going to use the useQueryClient instance and access the invalidateQueries method in useMutate second argument (2nd argument of useMutate is a object type). This method required 1 argument which is the query key name that we are going to refetch again.
+```
+export const AddDataSuperheroname = () => {
+    const queryClient = useQueryClient()
+    return useMutation(postSuperhero, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('superheroes-name')
+        }
+    })
+}
+```

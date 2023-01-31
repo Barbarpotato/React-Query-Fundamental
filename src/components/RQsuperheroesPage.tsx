@@ -16,23 +16,18 @@ export const RQSuperheroesPage = () => {
         console.log('failed fetched data!', response)
     }
 
-    const { isLoading, isError, data, refetch } = useDataSuperheroesname(onError, onSuccess)
-    const { mutate: addHero, isSuccess } = AddDataSuperheroname()
+    const { isLoading, isError, data } = useDataSuperheroesname(onError, onSuccess)
+    const { mutate: addHero } = AddDataSuperheroname()
 
     const handleAddSuperhero = (): void => {
         const dataPost = { name, alterEgo }
         addHero(dataPost)
-        refetch()
     }
 
     if (isLoading) {
         return (
             <>Loading data...</>
         )
-    }
-
-    if (isSuccess) {
-        refetch()
     }
 
     return (
