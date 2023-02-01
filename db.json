@@ -17,18 +17,13 @@
     },
     {
       "name": "Captain America",
-      "alterEgo": "Chris Evan",
+      "alterEgo": "Chris Evans",
       "id": 4
     },
     {
       "name": "Iron Man",
       "alterEgo": "Tony Stark",
       "id": 5
-    },
-    {
-      "name": "Hulk",
-      "alterEgo": "Bruce Banner",
-      "id": 6
     }
   ],
   "friends": [

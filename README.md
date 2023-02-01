@@ -91,7 +91,7 @@ const { isLoading, data, isError, error} = useQuery('superheroes', fectSuperHero
 ```
 
 # Query Caching
-the React Query library provides the cache data when we fetched some data. By default, every query result is cached for 5 minutes. React Query can also knows the server data might have updated and the cached might not contained the latest React Query will use the caching data that not been changed and rendering it to the UI, while React Query trying to re-fetching to check whether the data has changed or not. if some data has been changed, then the new data will update the caching data to the UI. We can use the boolean flag in useQuery by using: <strong>isFetching</strong> to check the data is fetching or not.
+the React Query library provides the cache data when we fetched some data. By default, every query result is cached for 5 minutes. React Query can also knows the server data might have updated and the cached might not contained the latest data. React Query will use the caching data that not been changed and rendering it to the UI, while React Query trying to re-fetching to check whether the data has changed or not. if some data has been changed, then the new data will update the caching data to the UI. We can use the boolean flag in useQuery by using: <strong>isFetching</strong> to check the data is fetching or not.
 <br/><br/>
 We can also manage the cache time in React Query by setting up the third argument in useQuery. The third argument will be type of Object, inside the object create the cacheTime property and added some integer value, value will count as a miliseconds. After the cache time was expired, the data that has been fetched will be turned to be a garbage collected:
 ```
@@ -123,7 +123,7 @@ the first property is refetchOnMount, this property is used to decide to always 
     )
 ```
 ### refetchOnWindowFocus
-refetchOnWindowFocus is used to automatically update the data in the UI that has been fetched previous time when the data has changed in the server side without re-rendering the component. the refetchOnWindowFocus was a boolean type. the default value of this property was false. For Example:
+refetchOnWindowFocus is used to automatically update the data in the UI that has been fetched previous time when the data has changed in the server side without re-rendering the component. the refetchOnWindowFocus was a boolean type. the default value of this property was true. For Example:
 ```
 const { isLoading, isError, data, isFetching } = useQuery('superheroes', fectSuperHeroes,
         {
@@ -473,11 +473,12 @@ export const RQSuperheroesPage = () => {
     const handleAddSuperhero = (): void => {
         const dataPost = { name, alterEgo }
         addHero(dataPost)
-        refetch()
     }
+
     if (isSuccess) {
         refetch()
     }
+
      <div>
             <h2>React Query Superheroes page</h2>
             <input onChange={(e) => setName(e.target.value)} value={name}></input><br />
@@ -502,3 +503,36 @@ export const AddDataSuperheroname = () => {
     })
 }
 ```
+
+### Handling Mutation Response
+In Previous method, we using the invalidateQueries method to refetching data after successful mutate data. But this thing is not really efficient because it required network request again after successful mutatation to sync between UI and the data in the backend.<br/><br/>
+In our scenario, we are using the json server as a demo for data fetching and data posting. for Data posting in json-server, We look at the response of json server provided after we posting some data. let's look at one example response after we successfully post data:
+```
+data:{
+  "name": "w",
+  "alterEgo": "qw",
+  "id": 7
+}
+``` 
+It looks like the json server giving us back the data that we have sent to the server as a response with status 201. we will use this data response and store it to the cache data, so the application do not request network to much in the background. here's the code:
+```
+const postSuperhero = (superhero: postSuperheroType): Promise<any> => {
+    return axios.post('http://localhost:4000/superheroes', superhero)
+}
+
+export const AddDataSuperheroname = () => {
+    const queryClient = useQueryClient()
+    return useMutation(postSuperhero, {
+        onSuccess: (data) => {
+            queryClient.setQueryData('superheroes-name', (oldQueryData: any) => {
+                return {
+                    ...oldQueryData,
+                    data: [...oldQueryData.data, data.data]
+                }
+            })
+        }
+    })
+}
+
+```
+First thing, we need to pass data in onSuccess argument, where the data refers to the entire response for the post request. then, instead using the invalidateQueries we are now using the setQueryData. this function is used to update the query cache. the first argument of this method is the query key. use the query key that we are going to update in the cache. the second argument is the function and passing the oldQueryData argument in this function. this refers to what is present in the query cache. In a nutshell, we are modified the cache data which we are append a new data that we got in the mutation response.

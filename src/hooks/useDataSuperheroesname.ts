@@ -31,8 +31,13 @@ const postSuperhero = (superhero: postSuperheroType): Promise<any> => {
 export const AddDataSuperheroname = () => {
     const queryClient = useQueryClient()
     return useMutation(postSuperhero, {
-        onSuccess: () => {
-            queryClient.invalidateQueries('superheroes-name')
+        onSuccess: (data) => {
+            queryClient.setQueryData('superheroes-name', (oldQueryData: any) => {
+                return {
+                    ...oldQueryData,
+                    data: [...oldQueryData.data, data.data]
+                }
+            })
         }
     })
 }
