@@ -568,8 +568,8 @@ export const AddDataSuperheroname = () => {
 There are 3 necessary callbacks for Optimistic Update:
 1. onMutate: this callback can be used to handle some side effects when the request is in the process.
 2. onError: This callback will fire if the mutation encounters an error and will be passed the error.
-3. onSettled: This callback will fire when the mutation is either successfully fetched or encounters an error and be passed either the data or error <br/>
-Let's see what happened in code:
+3. onSettled: This callback will fire when the mutation is either successfully fetched or encounters an error and be passed either the data or error.
+<h5>Lets see what happened in this code, piece by piece:</h5>
 1. onMutate callback, our goal in this callback is to displaying the post data that user sent to the backend without waiting the confirmation from the backend server (error or success). so in here, we canceling the queries so our optimistic update wont overwritten, capturing the current superheroes-name cache data in some variable. then, we updating the superheroes-name cache data to append new data that user created. finally, we return the old superheroes-name cache data. This will be use for a rollback (just in case we are facing the mutation error)
 ```
   onMutate: async (newHeroData: postSuperheroType) => {
