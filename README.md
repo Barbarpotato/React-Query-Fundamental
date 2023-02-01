@@ -539,11 +539,6 @@ First thing, we need to pass data in onSuccess argument, where the data refers t
 
 ### Optimistic Update
 Optimistic updates (a.k.a. Optimistic UI) is a pattern that we can especially see in frontend/UX development where different actions update instantly on the visual interface without waiting for confirmation from the server. In our case, let's try to implement Optimistic Update while posting some superheroes data.<br/>
-There are 3 necessary callbacks for Optimistic Update:
-1. onMutate: this callback can be used to handle some side effects when the request is in the process.
-2. onError: This callback will fire if the mutation encounters an error and will be passed the error.
-3. onSettled: This callback will fire when the mutation is either successfully fetched or encounters an error and be passed either the data or error 
-Let's see what happened in code:
 ```
 export const AddDataSuperheroname = () => {
     const queryClient = useQueryClient()
@@ -569,9 +564,13 @@ export const AddDataSuperheroname = () => {
         }
     })
 }
-
 ```
-1. onMutate callback, our goal in this clalback is to displaying the post data that user sent to the backend without waiting the confirmation from the backend server (error or success). so in here, we canceling the queries so our optimistic update wont overwritten, capturing the current superheroes-name cache data in some variable. then, we updating the superheroes-name cache data to append new data that user created. finally, we return the old superheroes-name cache data. This will be use for a rollback (just in case we are facing the mutation error)
+There are 3 necessary callbacks for Optimistic Update:
+1. onMutate: this callback can be used to handle some side effects when the request is in the process.
+2. onError: This callback will fire if the mutation encounters an error and will be passed the error.
+3. onSettled: This callback will fire when the mutation is either successfully fetched or encounters an error and be passed either the data or error <br/>
+Let's see what happened in code:
+1. onMutate callback, our goal in this callback is to displaying the post data that user sent to the backend without waiting the confirmation from the backend server (error or success). so in here, we canceling the queries so our optimistic update wont overwritten, capturing the current superheroes-name cache data in some variable. then, we updating the superheroes-name cache data to append new data that user created. finally, we return the old superheroes-name cache data. This will be use for a rollback (just in case we are facing the mutation error)
 ```
   onMutate: async (newHeroData: postSuperheroType) => {
         await queryClient.cancelQueries()
