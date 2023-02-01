@@ -24,6 +24,11 @@
       "name": "Iron Man",
       "alterEgo": "Tony Stark",
       "id": 5
+    },
+    {
+      "name": "123",
+      "alterEgo": "123",
+      "id": 6
     }
   ],
   "friends": [

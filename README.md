@@ -536,3 +536,66 @@ export const AddDataSuperheroname = () => {
 
 ```
 First thing, we need to pass data in onSuccess argument, where the data refers to the entire response for the post request. then, instead using the invalidateQueries we are now using the setQueryData. this function is used to update the query cache. the first argument of this method is the query key. use the query key that we are going to update in the cache. the second argument is the function and passing the oldQueryData argument in this function. this refers to what is present in the query cache. In a nutshell, we are modified the cache data which we are append a new data that we got in the mutation response.
+
+### Optimistic Update
+Optimistic updates (a.k.a. Optimistic UI) is a pattern that we can especially see in frontend/UX development where different actions update instantly on the visual interface without waiting for confirmation from the server. In our case, let's try to implement Optimistic Update while posting some superheroes data.<br/>
+There are 3 necessary callbacks for Optimistic Update:
+1. onMutate: this callback can be used to handle some side effects when the request is in the process.
+2. onError: This callback will fire if the mutation encounters an error and will be passed the error.
+3. onSettled: This callback will fire when the mutation is either successfully fetched or encounters an error and be passed either the data or error 
+Let's see what happened in code:
+```
+export const AddDataSuperheroname = () => {
+    const queryClient = useQueryClient()
+    return useMutation(postSuperhero, {
+        onMutate: async (newHeroData: postSuperheroType) => {
+            await queryClient.cancelQueries()
+            const prevData: any = queryClient.getQueryData('superheroes-name')
+            queryClient.setQueryData('superheroes-name', (oldQueryData: any) => {
+                return {
+                    ...oldQueryData,
+                    data: [...oldQueryData.data, { ...newHeroData, id: prevData.data.length + 1 }]
+                }
+            })
+            return {
+                prevData
+            }
+        },
+        onError: (_error, _data, context) => {
+            queryClient.setQueryData('superheroes-name', context?.prevData)
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries('superheroes-name')
+        }
+    })
+}
+
+```
+1. onMutate callback, our goal in this clalback is to displaying the post data that user sent to the backend without waiting the confirmation from the backend server (error or success). so in here, we canceling the queries so our optimistic update wont overwritten, capturing the current superheroes-name cache data in some variable. then, we updating the superheroes-name cache data to append new data that user created. finally, we return the old superheroes-name cache data. This will be use for a rollback (just in case we are facing the mutation error)
+```
+  onMutate: async (newHeroData: postSuperheroType) => {
+        await queryClient.cancelQueries()
+        const prevData: any = queryClient.getQueryData('superheroes-name')
+        queryClient.setQueryData('superheroes-name', (oldQueryData: any) => {
+            return {
+                ...oldQueryData,
+                data: [...oldQueryData.data, { ...newHeroData, id: prevData.data.length + 1 }]
+            }
+        })
+        return {
+            prevData
+        }
+    }
+```
+2. onError function recevies 3 arguments. 1st argument is the error that was encounter, 2nd argument is the variables pass into the mutation, 3rd argumnet is context(an object) which contains additional information pertaining the mutation. on this 3rd argument, we can access the previous data that we returned from the onMutate callback. so if the mutation error, we can rollback to the previous data. In our case, we updating the supheroes cache data to the previous one if something went wrong (error)
+```
+ onError: (_error, _data, context) => {
+        queryClient.setQueryData('superheroes-name', context?.prevData)
+    }
+```
+3. onSettled function recevies 3 arguments same as onError callback. This callback is happened wheter it is success or error while performing the mutation. In our case, What we are going to do in here is refetching using the invalidateQueries method.
+```
+ onSettled: () => {
+        queryClient.invalidateQueries('superheroes-name')
+    }
+```
